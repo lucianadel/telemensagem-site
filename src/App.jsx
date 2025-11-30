@@ -1,215 +1,313 @@
-import "./styles.css";
-import { useState, useEffect } from "react";
-import { getReadyMessages } from "./services/api";
+import { useEffect, useState } from "react";
+import AudioPlayer from "./components/AudioPlayer";
 
-export default function App() {
-  const [categoriaAtiva, setCategoriaAtiva] = useState("todas");
-  const [modalInfo, setModalInfo] = useState(null);
-  const [mensagens, setMensagens] = useState([]);
+const API_URL = "http://localhost:3333/api/messages-ready";
+
+const CATEGORIES = [
+  { id: "todas", label: "Todas" },
+  { id: "amor", label: "Amor" },
+  { id: "aniversario", label: "Aniversário" },
+  { id: "maes", label: "Dia das Mães" },
+  { id: "pais", label: "Dia dos Pais" },
+  { id: "infantil", label: "Infantil" },
+];
+
+function App() {
+  const [messages, setMessages] = useState([]);
+  const [category, setCategory] = useState("todas");
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const categorias = [
-    "todas",
-    "aniversario",
-    "amor",
-    "amizade",
-    "familia",
-    "evangelica",
-    "motivacao",
-    "saudade",
-    "bomdia_boanoite"
-  ];
+  const [error, setError] = useState("");
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    async function carregar() {
+    async function loadMessages() {
       try {
-        const data = await getReadyMessages();
-        setMensagens(data);
+        setLoading(true);
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        setMessages(data);
       } catch (err) {
-        console.error("Erro ao carregar mensagens:", err);
+        console.error(err);
+        setError(
+          "Não foi possível carregar as mensagens. Verifique se o servidor está rodando."
+        );
       } finally {
         setLoading(false);
       }
     }
-    carregar();
+
+    loadMessages();
   }, []);
 
-  if (loading) {
-    return <p style={{ padding: 20 }}>Carregando mensagens...</p>;
+  const normalizedSearch = search.toLowerCase();
+
+  const filteredMessages = messages.filter((msg) => {
+    const matchCategory = category === "todas" || msg.categoria === category;
+    const text = `${msg.titulo ?? ""} ${msg.descricao ?? ""}`.toLowerCase();
+    const matchSearch = text.includes(normalizedSearch);
+    return matchCategory && matchSearch;
+  });
+
+  const whatsappNumber = "55SEUNUMEROAQUI";
+
+  function buildWhatsAppLink(message) {
+    const texto = `Olá! Vi a telemensagem "%s" no site e gostaria de saber como funciona para enviar.`.replace(
+      "%s",
+      message.titulo ?? "Personalizada"
+    );
+
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(texto)}`;
   }
 
-  const mensagensFiltradas =
-    categoriaAtiva === "todas"
-      ? mensagens
-      : mensagens.filter((msg) => msg.categoria === categoriaAtiva);
-
-  const abrirModal = (msg) => {
-    setModalInfo(msg);
-  };
-
-  const fecharModal = () => {
-    setModalInfo(null);
-  };
-
   return (
-    <div className="container-principal">
-      <header className="topo">
-        <h1 className="logo">✨ Telemensagem Online</h1>
-        <p className="sublogo">Escolha, personalize e envie pelo WhatsApp</p>
+    <div className="page">
+      {/* HEADER */}
+      <header className="header">
+        <div className="container header-inner">
+          <div className="logo-area">
+            <span className="logo-icon">💌</span>
+            <div>
+              <h1 className="logo-title">Telemensagem Online</h1>
+              <p className="logo-subtitle">
+                Mensagens personalizadas com voz e trilha sonora
+              </p>
+            </div>
+          </div>
+
+          <div className="header-contact">
+            <div className="header-phone">
+              <span>Atendimento WhatsApp</span>
+              <strong>(00) 00000-0000</strong>
+            </div>
+            <a
+              href={`https://wa.me/${whatsappNumber}`}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-outline"
+            >
+              Falar agora
+            </a>
+          </div>
+        </div>
       </header>
 
-      <div className="categorias">
-        {categorias.map((cat) => (
-          <button
-            key={cat}
-            className={`categoria-btn ${categoriaAtiva === cat ? "ativa" : ""}`}
-            onClick={() => setCategoriaAtiva(cat)}
-          >
-            {cat.toUpperCase().replace("_", " ")}
-          </button>
-        ))}
-      </div>
+      {/* HERO */}
+      <section className="hero">
+        <div className="container hero-inner">
+          <div className="hero-text">
+            <span className="pill">IA + Emoção Humana</span>
+            <h2>
+              Surpreenda quem você ama com
+              <span> uma telemensagem inesquecível.</span>
+            </h2>
+            <p>
+              Escolha uma mensagem pronta ou peça algo totalmente exclusivo. Nós
+              gravamos com voz feminina ou masculina, trilha de fundo e muita
+              emoção.
+            </p>
 
-      <div className="lista-mensagens">
-        {mensagensFiltradas.length === 0 && (
-          <p style={{ padding: 20 }}>Nenhuma mensagem nesta categoria.</p>
-        )}
-
-        {mensagensFiltradas.map((msg) => (
-          <div key={msg.id} className="card">
-            <h3>{msg.titulo}</h3>
-
-            <p className="duracao">🎧 {msg.duracao || "1:20"}</p>
-
-            <div className="card-botoes">
-              <div className="player">
-                <audio
-                  id={"player-" + msg.id}
-                  src={`http://localhost:3333${msg.url}`}
-                ></audio>
-
-                <button
-                  className="btn-preview"
-                  onClick={() => {
-                    const player = document.getElementById("player-" + msg.id);
-                    player.paused ? player.play() : player.pause();
-                  }}
-                >
-                  ▶⏸ Tocar / Pausar
-                </button>
-
-                <button
-                  className="btn-stop"
-                  onClick={() => {
-                    const player = document.getElementById("player-" + msg.id);
-                    player.pause();
-                    player.currentTime = 0;
-                  }}
-                >
-                  ⏹ Parar
-                </button>
-              </div>
-
-              <button className="btn-comprar" onClick={() => abrirModal(msg)}>
-                Enviar WhatsApp
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {modalInfo && (
-        <>
-          <div className="modal-backdrop" onClick={fecharModal}></div>
-
-          <div className="modal">
-            <div className="modal-conteudo">
-              <button className="fechar" onClick={fecharModal}>
-                ✖
-              </button>
-
-              <h2 className="modal-titulo">{modalInfo.titulo}</h2>
-
-              <label>Seu nome (quem envia):</label>
-              <input id="nomeRemetente" type="text" placeholder="Seu nome" />
-
-              <label>Nome da pessoa que recebe:</label>
-              <input
-                id="nomeDestinatario"
-                type="text"
-                placeholder="Nome da pessoa"
-              />
-
-              <label>Número de WhatsApp do destinatário:</label>
-              <input
-                id="numeroDestinatario"
-                type="text"
-                placeholder="11999999999"
-              />
-
-              <label>Mensagem personalizada (opcional):</label>
-              <textarea id="textoOpcional" rows={3}></textarea>
-
-              <label>Escolha a voz:</label>
-              <div className="opcoes-voz">
-                <label>
-                  <input
-                    type="radio"
-                    name="voz"
-                    value="Feminina"
-                    defaultChecked
-                  />{" "}
-                  Feminina
-                </label>
-                <label>
-                  <input type="radio" name="voz" value="Masculina" /> Masculina
-                </label>
-              </div>
-
-              <button
-                className="btn-finalizar"
-                onClick={() => {
-                  const remetente =
-                    document.getElementById("nomeRemetente").value;
-                  const destinatario =
-                    document.getElementById("nomeDestinatario").value;
-                  const numero =
-                    document.getElementById("numeroDestinatario").value;
-                  const texto = document.getElementById("textoOpcional").value;
-                  const voz = document.querySelector(
-                    "input[name='voz']:checked"
-                  ).value;
-
-                  if (!remetente || !destinatario || !numero) {
-                    alert("Preencha os dados obrigatórios!");
-                    return;
-                  }
-
-                  const mensagemFinal = `
-💌 *${remetente} lhe enviou uma telemensagem!*
-
-🎙️ *Mensagem:* ${modalInfo.titulo}
-🎤 *Voz:* ${voz}
-
-${texto ? "💬 Mensagem personalizada:\n" + texto : ""}
-
-❤️ Envio automático pelo site Telemensagem Online.
-                  `;
-
-                  const url = `https://wa.me/${numero}?text=${encodeURIComponent(
-                    mensagemFinal
-                  )}`;
-
-                  window.open(url, "_blank");
-                  fecharModal();
-                }}
+            <div className="hero-actions">
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-primary"
               >
-                Enviar pelo WhatsApp 💚
-              </button>
+                Quero enviar uma telemensagem
+              </a>
+              <a href="#lista" className="btn btn-ghost">
+                Ver mensagens prontas
+              </a>
+            </div>
+
+            <ul className="hero-list">
+              <li>✔ Aniversários, pais, mães, infantil, amor e mais</li>
+              <li>✔ Entrega rápida por áudio ou link</li>
+              <li>✔ Opção de mensagem personalizada</li>
+            </ul>
+          </div>
+
+          <div className="hero-card">
+            <div className="hero-wave" />
+            <div className="hero-card-inner">
+              <p className="hero-card-title">Exemplo de telemensagem</p>
+              <p className="hero-card-text">
+                <strong>“Hoje o dia é seu...”</strong> – trilha suave, voz
+                emocionada e aquela mensagem que toca o coração de quem recebe.
+              </p>
+              <div className="hero-badges">
+                <span>🎙 Voz feminina ou masculina</span>
+                <span>🎵 Fundo musical</span>
+                <span>⚡ Entrega rápida</span>
+              </div>
             </div>
           </div>
-        </>
+        </div>
+      </section>
+
+      {/* LISTA */}
+      <section id="lista" className="section">
+        <div className="container">
+          <div className="section-header">
+            <div>
+              <h3>Mensagens prontas</h3>
+              <p>Filtre por ocasião ou pesquise por palavra-chave.</p>
+            </div>
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Buscar por título ou descrição..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* CATEGORIAS */}
+          <div className="category-bar">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`category-pill ${
+                  category === cat.id ? "active" : ""
+                }`}
+                onClick={() => setCategory(cat.id)}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {loading && <p className="info">Carregando mensagens...</p>}
+          {error && <p className="error">{error}</p>}
+
+          {!loading && !error && filteredMessages.length === 0 && (
+            <p className="info">
+              Nenhuma mensagem encontrada com esses filtros.
+            </p>
+          )}
+
+          {/* CARDS */}
+          <div className="grid">
+            {filteredMessages.map((msg) => (
+              <article
+                key={msg.id}
+                className={`card ${msg.destaque ? "card-featured" : ""}`}
+              >
+                <div className="card-header">
+                  <h4>{msg.titulo}</h4>
+                  {msg.categoria && (
+                    <span className="tag">
+                      {CATEGORIES.find((c) => c.id === msg.categoria)?.label ??
+                        msg.categoria}
+                    </span>
+                  )}
+                </div>
+
+                <p className="card-description">{msg.descricao}</p>
+
+                <div className="card-meta">
+                  {msg.voz && <span>🎙 {msg.voz}</span>}
+                  {msg.duracao && <span>⏱ {msg.duracao}</span>}
+                </div>
+
+                {/* PLAYER NOVO */}
+                {msg.url && (
+                  <div className="card-audio">
+                    <AudioPlayer
+                      src={`http://localhost:3333${msg.url}`}
+                    />
+                  </div>
+                )}
+
+                <div className="card-actions">
+                  <button
+                    type="button"
+                    className="btn btn-ghost small"
+                    onClick={() => setSelected(msg)}
+                  >
+                    Ver detalhes
+                  </button>
+                  <a
+                    href={buildWhatsAppLink(msg)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-primary small"
+                  >
+                    Quero essa mensagem
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="container footer-inner">
+          <p>
+            © {new Date().getFullYear()} Telemensagem Online – Todos os direitos
+            reservados.
+          </p>
+          <p className="footer-mini">Desenvolvido com carinho por você ✨</p>
+        </div>
+      </footer>
+
+      {/* MODAL */}
+      {selected && (
+        <div className="modal-backdrop" onClick={() => setSelected(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="modal-close"
+              onClick={() => setSelected(null)}
+            >
+              ✕
+            </button>
+            <h3>{selected.titulo}</h3>
+
+            {selected.categoria && (
+              <p className="modal-tag">
+                Categoria:{" "}
+                <strong>
+                  {CATEGORIES.find((c) => c.id === selected.categoria)?.label ??
+                    selected.categoria}
+                </strong>
+              </p>
+            )}
+
+            <p className="modal-text">{selected.descricao}</p>
+
+            <div className="modal-meta">
+              {selected.voz && <span>🎙 Voz: {selected.voz}</span>}
+              {selected.duracao && <span>⏱ Duração: {selected.duracao}</span>}
+            </div>
+
+            {/* PLAYER NO MODAL */}
+            {selected.url && (
+              <div className="modal-audio">
+                <AudioPlayer
+                  src={`http://localhost:3333${selected.url}`}
+                />
+              </div>
+            )}
+
+            <a
+              href={buildWhatsAppLink(selected)}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary full"
+            >
+              Quero enviar essa telemensagem
+            </a>
+          </div>
+        </div>
       )}
     </div>
   );
 }
+
+export default App;

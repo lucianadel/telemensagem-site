@@ -1,0 +1,436 @@
+/* ===========================================================
+   🌟 TEMA VIBRANTE NEON – VERMELHO ✦ PINK ✦ DOURADO
+   💖 COM ANIMAÇÕES, GLOW, NEON SUAVE E VISUAL PREMIUM
+   =========================================================== */
+
+
+/* RESET */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at top,
+    #ff1b47 0%,
+    #ff3366 35%,
+    #c40039 70%,
+    #33000f 100%
+  );
+  color: #fff5f7;
+  overflow-x: hidden;
+  animation: bgPulse 10s infinite alternate ease-in-out;
+}
+
+/* Fundo pulsando levemente */
+@keyframes bgPulse {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+
+
+/* ===========================================
+   🔥 LAYOUT
+   =========================================== */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+
+/* ===========================================
+   🔥 HEADER NEON COM ANIMAÇÃO SUAVE
+   =========================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(16px);
+  background: linear-gradient(90deg,
+    rgba(255, 0, 70, 0.95),
+    rgba(240, 0, 60, 0.92),
+    rgba(255, 90, 120, 0.88)
+  );
+  padding: 1.3rem 0;
+  border-bottom: 1px solid rgba(255, 200, 220, 0.35);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+  animation: headerGlow 4s infinite alternate;
+}
+
+@keyframes headerGlow {
+  0% { box-shadow: 0 0 20px rgba(255, 50, 90, 0.45); }
+  100% { box-shadow: 0 0 40px rgba(255, 100, 140, 0.6); }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.logo-icon {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 6px 18px rgba(255, 220, 235, 0.9));
+  animation: floating 3s infinite ease-in-out alternate;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+
+
+/* ===========================================
+   🔥 BOTÕES NEON COM ANIMAÇÃO
+   =========================================== */
+
+.btn {
+  padding: 0.85rem 1.7rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: 0.25s ease;
+}
+
+/* BRILHO CONSTANTE */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 14px rgba(255, 50, 80, 0.55); }
+  100% { box-shadow: 0 0 22px rgba(255, 50, 80, 0.8); }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff003c, #ff6a00, #ffb400);
+  color: #fff;
+  animation: pulseGlow 2.5s infinite alternate;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+/* Contorno */
+.btn-outline {
+  border: 2px solid rgba(255, 240, 250, 0.9);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Ghost */
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+}
+
+
+
+/* ===========================================
+   🔥 HERO SECTION
+   =========================================== */
+
+.hero {
+  padding: 3.5rem 0 3rem;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 3rem;
+}
+
+.pill {
+  background: rgba(255, 230, 240, 0.95);
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  color: #7a0020;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 14px rgba(255, 150, 180, 0.4);
+}
+
+.hero h2 {
+  font-size: 2.6rem;
+  line-height: 1.25;
+  text-shadow: 0 5px 20px rgba(0, 0, 0, 0.45);
+}
+
+.hero h2 span {
+  color: #ffe000;
+  text-shadow: 0 3px 20px rgba(255, 200, 0, 0.7);
+}
+
+
+
+/* ===========================================
+   🔥 HERO CARD FLUTUANTE (3D)
+   =========================================== */
+
+.hero-card-inner {
+  background: linear-gradient(145deg, #540016, #33000d);
+  padding: 1.9rem;
+  border-radius: 1.6rem;
+  box-shadow: 0 35px 80px rgba(120, 0, 30, 0.85);
+  position: relative;
+  animation: floating 4s infinite ease-in-out alternate;
+}
+
+.hero-wave {
+  position: absolute;
+  inset: -40%;
+  background:
+    radial-gradient(circle at 0 0, rgba(255, 120, 170, 0.55), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(255, 200, 220, 0.5), transparent 55%);
+  opacity: 0.7;
+}
+
+
+
+/* ===========================================
+   🔥 SEÇÃO LISTA ESPAÇADA
+   =========================================== */
+
+.section {
+  padding: 4rem 0 4rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2.4rem;
+}
+
+.section-header h3 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+
+
+/* ===========================================
+   🔥 INPUT DE BUSCA ANIMADO
+   =========================================== */
+
+.search-box {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 1.1rem 1.2rem 1.1rem 3.2rem;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 80, 110, 0.4);
+  background: rgba(255, 240, 245, 0.98);
+  font-size: 1rem;
+  transition: 0.25s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Ícone da lupa */
+.search-box::before {
+  content: "🔍";
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.search-box input:focus {
+  border-color: #ff0054;
+  box-shadow: 0 0 0 5px rgba(255, 0, 84, 0.25);
+}
+
+
+
+/* ===========================================
+   🔥 CATEGORIAS ANIMADAS
+   =========================================== */
+
+.category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2.4rem;
+}
+
+.category-pill {
+  padding: 0.7rem 1.3rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 150, 170, 0.5);
+  background: rgba(255, 230, 240, 0.9);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.category-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(255, 120, 160, 0.4);
+}
+
+.category-pill.active {
+  background: linear-gradient(135deg, #ff003c, #ff6a00);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(255, 40, 70, 0.55);
+}
+
+
+
+/* ===========================================
+   🔥 CARDS DE MENSAGENS PREMIUM
+   =========================================== */
+
+.grid {
+  display: grid;
+  gap: 2.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+
+.card {
+  background: rgba(255, 245, 247, 0.97);
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  border: 2px solid rgba(255, 170, 190, 0.5);
+  color: #4a0013;
+  box-shadow: 0 12px 30px rgba(100, 0, 20, 0.12);
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(100, 0, 20, 0.3);
+}
+
+.card-featured {
+  border-color: #ff003c;
+  box-shadow: 0 30px 60px rgba(255, 20, 70, 0.4);
+}
+
+.card-header h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.card-description {
+  margin-top: 0.7rem;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+
+
+/* ===========================================
+   🔥 FOOTER ELEGANTE
+   =========================================== */
+
+.footer {
+  margin-top: auto;
+  padding: 2.4rem 0;
+  background: rgba(40, 0, 10, 0.95);
+  color: #ffdce4;
+  text-align: center;
+  font-size: 1rem;
+  border-top: 1px solid rgba(255, 140, 150, 0.25);
+}
+
+
+
+/* ===========================================
+   🔥 MODAL SUAVE
+   =========================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 0, 10, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal {
+  background: #fff5f8;
+  color: #4a0013;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(80, 0, 20, 0.5);
+}
+
+
+
+/* ===========================================
+   🔥 RESPONSIVO
+   =========================================== */
+
+@media (max-width: 768px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+
+  .search-box {
+    max-width: 100%;
+  }
+
+  .category-bar {
+    justify-content: center;
+  }
+}
