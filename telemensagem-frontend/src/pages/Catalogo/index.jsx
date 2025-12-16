@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+
+
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -9,11 +12,18 @@ export default function Catalogo() {
         <h1>Catálogo de Mensagens</h1>
         <p>Escolha uma categoria</p>
 
-        <ul>
-          <li>Amor</li>
-          <li>Aniversário</li>
-          <li>Agradecimento</li>
-        </ul>
+       <ul>
+  <li>
+    <Link to="/categoria/amor">Amor</Link>
+  </li>
+  <li>
+    <Link to="/categoria/aniversario">Aniversário</Link>
+  </li>
+  <li>
+    <Link to="/categoria/agradecimento">Agradecimento</Link>
+  </li>
+</ul>
+
       </main>
       <Footer />
     </>
